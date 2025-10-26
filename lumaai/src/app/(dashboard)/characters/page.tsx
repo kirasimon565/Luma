@@ -6,6 +6,7 @@ import { pb } from "@/lib/pocketbase";
 import { Record } from "pocketbase";
 import Link from "next/link";
 import { PlusCircle } from "lucide-react";
+import styles from './CharactersPage.module.scss';
 
 const CharactersPage = () => {
   const { user } = useAuthStore();
@@ -34,53 +35,45 @@ const CharactersPage = () => {
   }, [user]);
 
   if (loading) {
-    return (
-      <div className="flex items-center justify-center h-screen bg-dark-bg text-dark-text">
-        <p>Loading characters...</p>
-      </div>
-    );
+    return <div className={styles.page}><p>Loading characters...</p></div>;
   }
 
   if (error) {
-    return (
-      <div className="flex items-center justify-center h-screen bg-dark-bg text-error">
-        <p>Error: {error}</p>
-      </div>
-    );
+    return <div className={styles.page}><p className={styles.error}>Error: {error}</p></div>;
   }
 
   return (
-    <div className="p-4 sm:p-6 md:p-8 bg-dark-bg min-h-screen text-dark-text">
+    <div className={styles.page}>
       <div className="max-w-7xl mx-auto">
-        <div className="flex justify-between items-center mb-8">
-          <h1 className="text-3xl font-display font-bold">Your Characters</h1>
-          <Link
-            href="/characters/new"
-            className="flex items-center gap-2 px-4 py-2 bg-primary text-white rounded-lg hover:bg-primary/90 transition-colors"
-          >
+        <div className={styles.header}>
+          <h1 className={styles.title}>Your Characters</h1>
+          <Link href="/characters/new" className={styles.createButton}>
             <PlusCircle size={20} />
             Create Character
           </Link>
         </div>
 
         {characters.length === 0 ? (
-          <div className="text-center py-16 border-2 border-dashed border-dark-text/20 rounded-lg">
-            <p className="text-lg text-dark-text/70">You haven't created any characters yet.</p>
-            <p className="text-dark-text/50">Click "Create Character" to get started!</p>
+          <div className={styles.emptyState}>
+            <p>You haven't created any characters yet.</p>
+            <p>Click "Create Character" to get started!</p>
           </div>
         ) : (
-          <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-6">
+          <div className={styles.characterGrid}>
             {characters.map((char, index) => (
-              <Link href={`/characters/${char.id}`} key={char.id} style={{ animationDelay: `${index * 100}ms` }} className="opacity-0 animate-fade-in-up">
-                <div className="group bg-dark-bg/50 backdrop-blur-sm border border-dark-text/10 rounded-xl overflow-hidden shadow-lg hover:shadow-primary/30 hover:border-primary/50 transition-all duration-300 transform hover:-translate-y-1">
-                  <div className="w-full h-48 bg-secondary flex items-center justify-center overflow-hidden">
-                    <div className="w-full h-full bg-cover bg-center transition-transform duration-500 group-hover:scale-110" style={{ backgroundImage: `url(${char.avatarUrl})` }}>
-                      {!char.avatarUrl && <span className="text-5xl font-bold text-dark-bg flex items-center justify-center h-full">{char.name.charAt(0)}</span>}
+              <Link href={`/characters/${char.id}`} key={char.id}>
+                <div className={styles.characterCard} style={{ animationDelay: `${index * 100}ms` }}>
+                  <div className={styles.avatar}>
+                    <div
+                      className={styles.image}
+                      style={{ backgroundImage: `url(${char.avatarUrl})` }}
+                    >
+                      {!char.avatarUrl && <span className={styles.placeholder}>{char.name.charAt(0)}</span>}
                     </div>
                   </div>
-                  <div className="p-4">
-                    <h2 className="text-xl font-bold font-display">{char.name}</h2>
-                    <p className="text-sm text-dark-text/60 line-clamp-2 mt-1">{char.backstory}</p>
+                  <div className={styles.cardContent}>
+                    <h2 className={styles.name}>{char.name}</h2>
+                    <p className={styles.backstory}>{char.backstory}</p>
                   </div>
                 </div>
               </Link>

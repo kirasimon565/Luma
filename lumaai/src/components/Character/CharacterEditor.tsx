@@ -1,6 +1,6 @@
 "use client";
 
-import { useState, useEffect } from "react";
+import { useState } from "react";
 import { useRouter } from "next/navigation";
 import { useAuthStore } from "@/stores/authStore";
 import { pb } from "@/lib/pocketbase";
@@ -35,7 +35,9 @@ const CharacterEditor = () => {
     backstory: "",
     personaId: "",
   });
+import { useEffect } from "react";
 
+// ... (inside the component)
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [error, setError] = useState<string | null>(null);
 
@@ -77,6 +79,7 @@ const CharacterEditor = () => {
       };
       await pb.collection("characters").create(dataToSave);
       router.push("/characters");
+      // Optional: Show a success toast/notification
     } catch (err: any) {
       setError(err.message);
       setIsSubmitting(false);

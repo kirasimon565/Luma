@@ -1,18 +1,33 @@
 import { NextRequest, NextResponse } from "next/server";
 import { pb } from "@/lib/pocketbase";
-import { useAuthStore } from "@/stores/authStore";
+import PocketBase from 'pocketbase';
 
 export async function POST(req: NextRequest) {
   try {
-    const { characterId, userId, action } = await req.json();
+    const { characterId, action } = await req.json();
+    const authHeader = req.headers.get('Authorization');
 
-    if (!characterId || !userId || !action) {
+    if (!authHeader) {
+        return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
+    }
+
+    // Initialize a new PocketBase instance and set the auth store from the header
+    const tempPb = new PocketBase(process.env.POCKETBASE_URL);
+    tempPb.authStore.loadFromCookie(`pb_auth=${authHeader}`);
+
+    const user = tempPb.authStore.model;
+
+    if (!user) {
+        return NextResponse.json({ error: "Unauthorized: Invalid token" }, { status: 401 });
+    }
+
+    if (!characterId || !action) {
       return NextResponse.json({ error: "Missing required fields" }, { status: 400 });
     }
 
     await pb.collection('nsfw_logs').create({
       characterId,
-      userId,
+      userId: user.id,
       action,
       timestamp: new Date().toISOString(),
     });

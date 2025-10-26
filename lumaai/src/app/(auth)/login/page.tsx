@@ -4,6 +4,7 @@ import { useAuthStore } from "@/stores/authStore";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
 import { useState } from "react";
+import styles from './LoginPage.module.scss';
 
 const LoginPage = () => {
   const router = useRouter();
@@ -24,17 +25,12 @@ const LoginPage = () => {
   };
 
   return (
-    <div className="flex items-center justify-center min-h-screen bg-dark-bg bg-gradient-to-br from-primary via-dark-bg to-secondary">
-      <div className="w-full max-w-md p-8 space-y-6 bg-dark-bg/80 backdrop-blur-lg rounded-2xl shadow-2xl">
-        <h1 className="text-3xl font-bold text-center text-dark-text font-display">
-          Enter the Luma World
-        </h1>
-        <form onSubmit={handleSubmit} className="space-y-6">
+    <div className={styles.page}>
+      <div className={styles.card}>
+        <h1 className={styles.title}>Enter the Luma World</h1>
+        <form onSubmit={handleSubmit} className={styles.form}>
           <div>
-            <label
-              htmlFor="email"
-              className="block text-sm font-medium text-dark-text"
-            >
+            <label htmlFor="email" className={styles.label}>
               Email
             </label>
             <input
@@ -42,35 +38,29 @@ const LoginPage = () => {
               type="email"
               value={email}
               onChange={(e) => setEmail(e.target.value)}
-              className="w-full px-3 py-2 mt-1 text-dark-text bg-dark-bg/50 border border-dark-text/20 rounded-md shadow-sm focus:outline-none focus:ring-primary focus:border-primary"
+              className={styles.input}
             />
           </div>
           <div>
-            <label
-              htmlFor="password"
-              className="block text-sm font-medium text-dark-text"
-            >
+            <label htmlFor="password" className={styles.label}>
               Password
             </label>
             <input
               id="password"
               type="password"
               value={password}
-              onChange={(e) => setPassword(e.g.et.value)}
-              className="w-full px-3 py-2 mt-1 text-dark-text bg-dark-bg/50 border border-dark-text/20 rounded-md shadow-sm focus:outline-none focus:ring-primary focus:border-primary"
+              onChange={(e) => setPassword(e.target.value)}
+              className={styles.input}
             />
           </div>
-          {error && <p className="text-sm text-error">{error}</p>}
-          <button
-            type="submit"
-            className="w-full px-4 py-2 text-white bg-primary rounded-md hover:bg-primary/90 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-primary"
-          >
+          {error && <p className={styles.error}>{error}</p>}
+          <button type="submit" className={styles.button}>
             Login
           </button>
         </form>
-        <p className="text-sm text-center text-dark-text">
+        <p className={styles.link}>
           Don't have an account?{" "}
-          <Link href="/register" className="font-medium text-primary hover:underline">
+          <Link href="/register">
             Register
           </Link>
         </p>

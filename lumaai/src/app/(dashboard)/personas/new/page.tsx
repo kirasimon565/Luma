@@ -6,6 +6,7 @@ import { useAuthStore } from "@/stores/authStore";
 import { pb } from "@/lib/pocketbase";
 import Link from "next/link";
 import { ChevronLeft } from "lucide-react";
+import styles from './NewPersonaPage.module.scss';
 
 const NewPersonaPage = () => {
   const router = useRouter();
@@ -40,19 +41,17 @@ const NewPersonaPage = () => {
   };
 
   return (
-    <div className="p-4 sm:p-6 md:p-8 bg-dark-bg min-h-screen text-dark-text">
+    <div className={styles.page}>
       <div className="max-w-2xl mx-auto">
-        <div className="mb-8">
-          <Link href="/personas" className="flex items-center gap-2 text-dark-text/70 hover:text-dark-text">
-            <ChevronLeft size={20} />
-            Back to Personas
-          </Link>
-        </div>
-        <div className="bg-dark-bg/60 backdrop-blur-md border border-dark-text/10 rounded-2xl shadow-2xl p-6">
-          <h1 className="text-2xl font-display font-bold mb-4">Create New Persona</h1>
-          <form onSubmit={handleSubmit} className="space-y-6">
+        <Link href="/personas" className={styles.backLink}>
+          <ChevronLeft size={20} />
+          Back to Personas
+        </Link>
+        <div className={styles.card}>
+          <h1 className={styles.title}>Create New Persona</h1>
+          <form onSubmit={handleSubmit} className={styles.form}>
             <div>
-              <label htmlFor="name" className="block text-sm font-medium">
+              <label htmlFor="name" className={styles.label}>
                 Persona Name
               </label>
               <input
@@ -60,27 +59,27 @@ const NewPersonaPage = () => {
                 type="text"
                 value={name}
                 onChange={(e) => setName(e.target.value)}
-                className="w-full mt-1 px-3 py-2 bg-dark-bg/50 border border-dark-text/20 rounded-md shadow-sm focus:outline-none focus:ring-primary"
+                className={styles.input}
                 required
               />
             </div>
             <div>
-              <label htmlFor="description" className="block text-sm font-medium">
+              <label htmlFor="description" className={styles.label}>
                 Description
               </label>
               <textarea
                 id="description"
                 value={description}
                 onChange={(e) => setDescription(e.target.value)}
-                className="w-full mt-1 h-32 px-3 py-2 bg-dark-bg/50 border border-dark-text/20 rounded-md shadow-sm focus:outline-none focus:ring-primary"
+                className={styles.textarea}
                 required
               />
             </div>
-            {error && <p className="text-error text-sm">{error}</p>}
+            {error && <p className={styles.error}>{error}</p>}
             <button
               type="submit"
               disabled={isSubmitting}
-              className="w-full px-4 py-2 bg-primary text-white font-bold rounded-lg hover:bg-primary/90 disabled:opacity-50"
+              className={styles.button}
             >
               {isSubmitting ? "Saving..." : "Create Persona"}
             </button>

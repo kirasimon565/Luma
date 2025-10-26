@@ -6,6 +6,7 @@ import { pb } from "@/lib/pocketbase";
 import { Record } from "pocketbase";
 import Link from "next/link";
 import { PlusCircle, Trash2 } from "lucide-react";
+import styles from './PersonasPage.module.scss';
 
 const PersonasPage = () => {
   const { user } = useAuthStore();
@@ -45,46 +46,40 @@ const PersonasPage = () => {
   };
 
   if (loading) {
-    return <div className="p-8 text-center">Loading personas...</div>;
+    return <div className={styles.page}><p>Loading personas...</p></div>;
   }
 
   if (error) {
-    return <div className="p-8 text-center text-error">Error: {error}</div>;
+    return <div className={styles.page}><p className={styles.error}>Error: {error}</p></div>;
   }
 
   return (
-    <div className="p-4 sm:p-6 md:p-8 bg-dark-bg min-h-screen text-dark-text">
+    <div className={styles.page}>
       <div className="max-w-7xl mx-auto">
-        <div className="flex justify-between items-center mb-8">
-          <h1 className="text-3xl font-display font-bold">Your Personas</h1>
-          <Link
-            href="/personas/new"
-            className="flex items-center gap-2 px-4 py-2 bg-primary text-white rounded-lg hover:bg-primary/90 transition-colors"
-          >
+        <div className={styles.header}>
+          <h1 className={styles.title}>Your Personas</h1>
+          <Link href="/personas/new" className={styles.createButton}>
             <PlusCircle size={20} />
             Create Persona
           </Link>
         </div>
 
         {personas.length === 0 ? (
-          <div className="text-center py-16 border-2 border-dashed border-dark-text/20 rounded-lg">
-            <p className="text-lg text-dark-text/70">You haven't created any personas yet.</p>
-            <p className="text-dark-text/50">Personas are reusable templates for your characters.</p>
+          <div className={styles.emptyState}>
+            <p>You haven't created any personas yet.</p>
+            <p>Personas are reusable templates for your characters.</p>
           </div>
         ) : (
-          <div className="space-y-4">
+          <div className={styles.personaList}>
             {personas.map((persona) => (
-              <div
-                key={persona.id}
-                className="bg-dark-bg/50 backdrop-blur-sm border border-dark-text/10 rounded-xl p-4 flex justify-between items-center shadow-lg"
-              >
+              <div key={persona.id} className={styles.personaCard}>
                 <div>
-                  <h2 className="text-xl font-bold font-display">{persona.name}</h2>
-                  <p className="text-sm text-dark-text/60 line-clamp-2">{persona.description}</p>
+                  <h2 className={styles.name}>{persona.name}</h2>
+                  <p className={styles.description}>{persona.description}</p>
                 </div>
                 <button
                   onClick={() => handleDelete(persona.id)}
-                  className="text-error hover:text-error/80 transition-colors p-2"
+                  className={styles.deleteButton}
                 >
                   <Trash2 size={20} />
                 </button>

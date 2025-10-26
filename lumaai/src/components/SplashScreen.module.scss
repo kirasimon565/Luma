@@ -1,0 +1,95 @@
+.splashScreen {
+  position: fixed;
+  inset: 0;
+  z-index: 50;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  background-color: var(--dark-bg);
+  overflow: hidden;
+
+  .gradient {
+    position: absolute;
+    inset: 0;
+    background: linear-gradient(to bottom right, var(--primary), var(--dark-bg), var(--secondary));
+    opacity: 0.5;
+    animation: gradient-xy 15s ease infinite;
+  }
+
+  .orbContainer {
+    position: relative;
+  }
+
+  .orbGlow {
+    position: absolute;
+    inset: -0.5rem;
+    background: linear-gradient(to right, var(--primary), var(--secondary));
+    border-radius: 9999px;
+    filter: blur(1.5rem);
+    opacity: 0.75;
+    animation: pulse 2s cubic-bezier(0.4, 0, 0.6, 1) infinite;
+  }
+
+  .orb {
+    position: relative;
+    width: 8rem;
+    height: 8rem;
+    background-color: var(--dark-bg);
+    border-radius: 9999px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+
+    .orbInner {
+      width: 6rem;
+      height: 6rem;
+      background: linear-gradient(to bottom right, var(--primary), var(--secondary));
+      border-radius: 9999px;
+    }
+  }
+
+  h1 {
+    margin-top: 2rem;
+    font-size: 2.25rem;
+    font-family: 'Clash Display', sans-serif;
+    color: var(--dark-text);
+    animation: fade-in-up 1s ease-out;
+  }
+
+  p {
+    margin-top: 0.5rem;
+    font-size: 1.125rem;
+    color: var(--dark-text);
+    opacity: 0.8;
+    animation: fade-in-up 1s ease-out 0.3s;
+  }
+}
+
+@keyframes gradient-xy {
+  0%, 100% {
+    background-size: 400% 400%;
+    background-position: center center;
+  }
+  50% {
+    background-size: 200% 200%;
+    background-position: right center;
+  }
+}
+
+@keyframes fade-in-up {
+  0% {
+    opacity: 0;
+    transform: translateY(20px);
+  }
+  100% {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+@keyframes pulse {
+  50% {
+    opacity: .5;
+  }
+}
