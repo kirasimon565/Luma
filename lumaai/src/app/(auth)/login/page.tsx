@@ -5,6 +5,8 @@ import Link from "next/link";
 import { useRouter } from "next/navigation";
 import { useState } from "react";
 import styles from './LoginPage.module.scss';
+import rippleStyles from '@/styles/ripple.module.scss';
+import clsx from 'clsx';
 
 const LoginPage = () => {
   const router = useRouter();
@@ -54,7 +56,7 @@ const LoginPage = () => {
             />
           </div>
           {error && <p className={styles.error}>{error}</p>}
-          <button type="submit" className={styles.button}>
+          <button type="submit" className={clsx(styles.button, rippleStyles.ripple)}>
             Login
           </button>
         </form>
