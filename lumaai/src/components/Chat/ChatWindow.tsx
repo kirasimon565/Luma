@@ -24,6 +24,7 @@ const ChatWindow = () => {
   const [messages, setMessages] = useState<Message[]>([]);
   const [newMessage, setNewMessage] = useState("");
   const [loading, setLoading] = useState(true);
+  const [isTyping, setIsTyping] = useState(false);
   const [error, setError] = useState<string | null>(null);
 
   const messagesEndRef = useRef<HTMLDivElement>(null);
@@ -93,6 +94,7 @@ const ChatWindow = () => {
     setMessages(updatedMessages);
     const currentInput = newMessage;
     setNewMessage("");
+    setIsTyping(true);
 
     try {
       // Call our new API route
@@ -135,7 +137,8 @@ const ChatWindow = () => {
       // If the API call fails, revert the user's message for them to try again
       setMessages(messages);
       setNewMessage(currentInput);
-      // You could also add an error message to the UI
+    } finally {
+      setIsTyping(false);
     }
   };
 
@@ -187,6 +190,20 @@ const ChatWindow = () => {
             </div>
           </div>
         ))}
+        {isTyping && (
+            <div className="flex items-end gap-2 justify-start">
+                <div className="w-8 h-8 bg-secondary rounded-full flex-shrink-0 flex items-center justify-center font-bold text-dark-bg">
+                    {character.name.charAt(0)}
+                </div>
+                <div className="max-w-xs md:max-w-md lg:max-w-lg px-4 py-3 rounded-2xl bg-dark-text/10 text-dark-text rounded-bl-lg">
+                    <div className="flex items-center gap-1">
+                        <span className="h-2 w-2 bg-primary rounded-full animate-bounce delay-75"></span>
+                        <span className="h-2 w-2 bg-primary rounded-full animate-bounce delay-150"></span>
+                        <span className="h-2 w-2 bg-primary rounded-full animate-bounce delay-300"></span>
+                    </div>
+                </div>
+            </div>
+        )}
          <div ref={messagesEndRef} />
       </main>
 

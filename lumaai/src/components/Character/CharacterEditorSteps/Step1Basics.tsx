@@ -1,13 +1,15 @@
 "use client";
 
 import { CharacterData } from "../CharacterEditor";
+import { Record } from "pocketbase";
 
 interface Step1BasicsProps {
   data: CharacterData;
   updateData: (data: Partial<CharacterData>) => void;
+  personas: Record[];
 }
 
-const Step1Basics: React.FC<Step1BasicsProps> = ({ data, updateData }) => {
+const Step1Basics: React.FC<Step1BasicsProps> = ({ data, updateData, personas }) => {
   return (
     <div className="space-y-6 text-dark-text">
       <div>
@@ -58,6 +60,28 @@ const Step1Basics: React.FC<Step1BasicsProps> = ({ data, updateData }) => {
         />
         <p className="mt-1 text-xs text-dark-text/50">
           Describe the tone and style of your character's speech.
+        </p>
+      </div>
+
+      <div>
+        <label htmlFor="persona" className="block text-sm font-medium">
+          Link Persona (Optional)
+        </label>
+        <select
+          id="persona"
+          value={data.personaId}
+          onChange={(e) => updateData({ personaId: e.target.value })}
+          className="w-full px-3 py-2 mt-1 bg-dark-bg/50 border border-dark-text/20 rounded-md shadow-sm focus:outline-none focus:ring-primary focus:border-primary"
+        >
+          <option value="">None</option>
+          {personas.map((p) => (
+            <option key={p.id} value={p.id}>
+              {p.name}
+            </option>
+          ))}
+        </select>
+        <p className="mt-1 text-xs text-dark-text/50">
+          Link a pre-defined persona to influence this character.
         </p>
       </div>
 

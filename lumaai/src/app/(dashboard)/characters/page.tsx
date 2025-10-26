@@ -70,16 +70,17 @@ const CharactersPage = () => {
           </div>
         ) : (
           <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-6">
-            {characters.map((char) => (
-              <Link href={`/characters/${char.id}`} key={char.id}>
-                <div className="bg-dark-bg/50 backdrop-blur-sm border border-dark-text/10 rounded-xl overflow-hidden shadow-lg hover:shadow-primary/30 hover:border-primary/50 transition-all duration-300 transform hover:-translate-y-1">
-                  <div className="w-full h-48 bg-secondary flex items-center justify-center">
-                    {/* Placeholder for avatar */}
-                    <span className="text-5xl font-bold text-dark-bg">{char.name.charAt(0)}</span>
+            {characters.map((char, index) => (
+              <Link href={`/characters/${char.id}`} key={char.id} style={{ animationDelay: `${index * 100}ms` }} className="opacity-0 animate-fade-in-up">
+                <div className="group bg-dark-bg/50 backdrop-blur-sm border border-dark-text/10 rounded-xl overflow-hidden shadow-lg hover:shadow-primary/30 hover:border-primary/50 transition-all duration-300 transform hover:-translate-y-1">
+                  <div className="w-full h-48 bg-secondary flex items-center justify-center overflow-hidden">
+                    <div className="w-full h-full bg-cover bg-center transition-transform duration-500 group-hover:scale-110" style={{ backgroundImage: `url(${char.avatarUrl})` }}>
+                      {!char.avatarUrl && <span className="text-5xl font-bold text-dark-bg flex items-center justify-center h-full">{char.name.charAt(0)}</span>}
+                    </div>
                   </div>
                   <div className="p-4">
                     <h2 className="text-xl font-bold font-display">{char.name}</h2>
-                    <p className="text-sm text-dark-text/60 line-clamp-2">{char.backstory}</p>
+                    <p className="text-sm text-dark-text/60 line-clamp-2 mt-1">{char.backstory}</p>
                   </div>
                 </div>
               </Link>

@@ -9,6 +9,8 @@ import Step2Personality from "./CharacterEditorSteps/Step2Personality";
 import Step3Backstory from "./CharacterEditorSteps/Step3Backstory";
 import Step4Finalize from "./CharacterEditorSteps/Step4Finalize";
 
+import { Record } from "pocketbase";
+
 export type CharacterData = {
   name: string;
   avatarUrl: string;
@@ -16,12 +18,14 @@ export type CharacterData = {
   isNsfw: boolean;
   personalityTraits: Record<string, any>;
   backstory: string;
+  personaId?: string;
 };
 
 const CharacterEditor = () => {
   const router = useRouter();
   const { user } = useAuthStore();
   const [step, setStep] = useState(1);
+  const [personas, setPersonas] = useState<Record[]>([]);
   const [characterData, setCharacterData] = useState<CharacterData>({
     name: "",
     avatarUrl: "",
@@ -29,9 +33,28 @@ const CharacterEditor = () => {
     isNsfw: false,
     personalityTraits: {},
     backstory: "",
+    personaId: "",
   });
+import { useEffect } from "react";
+
+// ... (inside the component)
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [error, setError] = useState<string | null>(null);
+
+  useEffect(() => {
+    const fetchPersonas = async () => {
+      if (!user) return;
+      try {
+        const records = await pb.collection('personas').getFullList({
+          filter: `creator = "${user.id}"`,
+        });
+        setPersonas(records);
+      } catch (err) {
+        console.error("Failed to fetch personas:", err);
+      }
+    };
+    fetchPersonas();
+  }, [user]);
 
   const nextStep = () => setStep((prev) => prev + 1);
   const prevStep = () => setStep((prev) => prev - 1);
@@ -74,7 +97,7 @@ const CharacterEditor = () => {
         </div>
 
         <div className="p-6">
-          {step === 1 && <Step1Basics data={characterData} updateData={updateData} />}
+          {step === 1 && <Step1Basics data={characterData} updateData={updateData} personas={personas} />}
           {step === 2 && <Step2Personality data={characterData} updateData={updateData} />}
           {step === 3 && <Step3Backstory data={characterData} updateData={updateData} />}
           {step === 4 && <Step4Finalize data={characterData} />}

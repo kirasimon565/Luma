@@ -4,17 +4,26 @@ import { pb } from "@/lib/pocketbase";
 const HF_API_URL = "https://api-inference.huggingface.co/models/natalieparker/pygmalion-chat";
 const HF_API_TOKEN = process.env.HF_API_TOKEN;
 
+import { Record } from "pocketbase";
+
 interface Message {
   role: "user" | "assistant";
   text: string;
 }
 
-const buildPrompt = (character: any, history: Message[], newMessage: string): string => {
-    const { name, backstory, personalityTraits, voiceStyle, isNsfw } = character;
+const buildPrompt = (character: Record, memoryLogs: Record[], history: Message[], newMessage: string): string => {
+    const { name, backstory, personalityTraits, voiceStyle, isNsfw, expand } = character;
+    const persona = expand?.personaId;
 
-    const personality = personalityTraits
+    let personality = personalityTraits
       ? Object.entries(personalityTraits).map(([key, value]) => `${key}: ${value}`).join(', ')
       : 'No specific personality traits defined.';
+
+    if (persona) {
+        personality += `\nPersona: ${persona.name} - ${persona.description}`;
+    }
+
+    const memorySummary = memoryLogs.slice(0, 5).map(log => `- (${log.type}) ${log.content}`).join('\n');
 
     const systemPrompt = `<|system|>You are ${name}.
   Personality: ${personality}.
@@ -29,6 +38,10 @@ const buildPrompt = (character: any, history: Message[], newMessage: string): st
       .join('');
 
     const finalPrompt = `${systemPrompt}
+  MEMORY SUMMARY:
+  ${memorySummary}
+
+  RECENT CHAT:
   ${historyFormatted}
   <|user|>${newMessage}
   <|assistant|>`;
@@ -48,8 +61,12 @@ export async function POST(req: NextRequest) {
       return NextResponse.json({ error: "Missing required fields" }, { status: 400 });
     }
 
-    const character = await pb.collection('characters').getOne(characterId);
-    const prompt = buildPrompt(character, messages, newMessage.text);
+    const [character, memoryLogs] = await Promise.all([
+        pb.collection('characters').getOne(characterId, { expand: 'personaId' }),
+        pb.collection('memory_logs').getFullList({ filter: `character = "${characterId}"`, sort: '-timestamp' })
+    ]);
+
+    const prompt = buildPrompt(character, memoryLogs, messages, newMessage.text);
 
     const response = await fetch(HF_API_URL, {
       method: 'POST',
@@ -85,21 +102,45 @@ export async function POST(req: NextRequest) {
         }
     }
 
-    // 5. Basic Memory System Logic
-    // If the user's message was a question, create a memory log.
-    if (newMessage.text.includes("?")) {
-      const memoryContent = `User asked: "${newMessage.text}" and I responded: "${aiResponseText}"`;
+    // 5. Improved Memory System Logic
+    let memoryToCreate: { type: string; content: string } | null = null;
+    const userText = newMessage.text.toLowerCase();
+    const aiText = aiResponseText.toLowerCase();
+
+    // Episodic memory for questions
+    if (userText.includes("?")) {
+      memoryToCreate = {
+        type: 'episodic',
+        content: `User asked: "${newMessage.text}" and I responded: "${aiResponseText}"`,
+      };
+    }
+    // Semantic memory for statements of fact
+    else if (userText.startsWith("my name is") || userText.startsWith("i am") || userText.startsWith("i like")) {
+      memoryToCreate = {
+        type: 'semantic',
+        content: `User stated a fact: "${newMessage.text}"`,
+      };
+    }
+    // Emotional memory for strong sentiment
+    const emotionalWords = ["love", "hate", "happy", "sad", "angry", "excited"];
+    if (emotionalWords.some(word => aiText.includes(word))) {
+        memoryToCreate = {
+            type: 'emotional',
+            content: `In response to "${newMessage.text}", I felt: "${aiResponseText}"`,
+        };
+    }
+
+    if (memoryToCreate) {
       try {
         await pb.collection('memory_logs').create({
           character: characterId,
-          type: 'episodic',
-          content: memoryContent,
+          type: memoryToCreate.type,
+          content: memoryToCreate.content,
           timestamp: new Date().toISOString(),
         });
-        console.log("Created a new memory log.");
+        console.log(`Created a new ${memoryToCreate.type} memory log.`);
       } catch (memError) {
         console.error("Failed to create memory log:", memError);
-        // Don't block the chat response if memory creation fails
       }
     }
 
