@@ -1,0 +1,58 @@
+{
+    "name": "chat_sessions",
+    "system": false,
+    "id": "c1d2e3f4g5h6i7j8",
+    "createRule": null,
+    "updateRule": null,
+    "deleteRule": null,
+    "listRule": null,
+    "viewRule": null,
+    "schema": [
+      {
+        "system": false,
+        "id": "session_user",
+        "name": "user",
+        "type": "relation",
+        "required": true,
+        "unique": false,
+        "options": {
+          "collectionId": "_pb_users_auth_",
+          "cascadeDelete": true,
+          "minSelect": null,
+          "maxSelect": 1,
+          "displayFields": []
+        }
+      },
+      {
+        "system": false,
+        "id": "session_character",
+        "name": "character",
+        "type": "relation",
+        "required": true,
+        "unique": false,
+        "options": {
+          "collectionId": "b1c2d3e4f5g6h7i8",
+          "cascadeDelete": true,
+          "minSelect": null,
+          "maxSelect": 1,
+          "displayFields": []
+        }
+      },
+      {
+        "system": false,
+        "id": "session_messages",
+        "name": "messages",
+        "type": "json",
+        "required": false,
+        "unique": false,
+        "options": {}
+      }
+    ],
+    "indexes": [],
+    "listRule": null,
+    "viewRule": null,
+    "createRule": null,
+    "updateRule": null,
+    "deleteRule": null,
+    "options": {}
+  }

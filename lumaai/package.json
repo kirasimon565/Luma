@@ -10,14 +10,17 @@
     "test": "jest"
   },
   "dependencies": {
+    "@huggingface/inference": "^4.13.0",
+    "ai": "^5.0.82",
     "clsx": "^2.1.1",
     "lucide-react": "^0.548.0",
     "next": "^14.2.3",
-    "pocketbase": "^0.26.2",
+    "pocketbase": "^0.26.3",
     "react": "^18",
     "react-dom": "^18",
     "sass": "^1.93.2",
     "tailwind-merge": "^3.3.1",
+    "ts-node": "^10.9.2",
     "zustand": "^4.5.2"
   },
   "devDependencies": {
@@ -33,6 +36,6 @@
     "identity-obj-proxy": "^3.0.0",
     "jest": "^30.2.0",
     "jest-environment-jsdom": "^30.2.0",
-    "typescript": "^5"
+    "typescript": "^5.9.3"
   }
 }

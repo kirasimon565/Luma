@@ -1,0 +1,47 @@
+{
+    "name": "memory_logs",
+    "system": false,
+    "id": "d1e2f3g4h5i6j7k8",
+    "createRule": null,
+    "updateRule": null,
+    "deleteRule": null,
+    "listRule": null,
+    "viewRule": null,
+    "schema": [
+      {
+        "system": false,
+        "id": "log_session",
+        "name": "session",
+        "type": "relation",
+        "required": true,
+        "unique": false,
+        "options": {
+          "collectionId": "c1d2e3f4g5h6i7j8",
+          "cascadeDelete": true,
+          "minSelect": null,
+          "maxSelect": 1,
+          "displayFields": []
+        }
+      },
+      {
+        "system": false,
+        "id": "log_content",
+        "name": "content",
+        "type": "text",
+        "required": true,
+        "unique": false,
+        "options": {
+          "min": null,
+          "max": null,
+          "pattern": ""
+        }
+      }
+    ],
+    "indexes": [],
+    "listRule": null,
+    "viewRule": null,
+    "createRule": null,
+    "updateRule": null,
+    "deleteRule": null,
+    "options": {}
+  }
